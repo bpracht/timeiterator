@@ -1,8 +1,9 @@
 package com.pracht.timeiterator;
 
 import java.time.DayOfWeek;
-
+import java.time.Duration;
 import java.time.LocalDateTime;
+import java.time.Period;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalUnit;
@@ -25,6 +26,13 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 
+/**
+ * LocalDateTimeSequence
+ * Class that models a start LocalDateTime, a direction and a unit of change.
+ * 
+ * @author bpracht
+ *
+ */
 @Data
 @AllArgsConstructor
 @Builder(builderClassName = "Builder", buildMethodName = "build")
