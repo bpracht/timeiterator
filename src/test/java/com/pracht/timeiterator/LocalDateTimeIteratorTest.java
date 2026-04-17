@@ -6,6 +6,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
@@ -113,6 +114,42 @@ public class LocalDateTimeIteratorTest {
 		expectedLocalDateTime.add(LocalDateTime.of(LocalDate.of(2022, 10, 12), LocalTime.of(20, 00, 0)));
 		assertThat(actualLocalDateTime.size()).isEqualTo(2);
 		assertThat(actualLocalDateTime).isEqualTo(expectedLocalDateTime);
+	}
+
+	@Test
+	void testDump() {
+		LocalDateTimeSequence timeSequence1 = LocalDateTimeSequence.builder()
+				.startingPoint(LocalDateTime.of(LocalDate.of(2022, 9, 12), LocalTime.of(20, 00, 0))).cycleCount(1L)
+				.cycleUnit(ChronoUnit.MONTHS).maximumPointCount(5L).build();
+
+		LocalDateTimeIterator localDateTimeIterator = LocalDateTimeIterator.builder()
+				.startingPoint(initialStartLocalDateTime).maximumPointCount(3L).sequence(timeSequence1)
+				.dateTimeFormatter(DateTimeFormatter.ISO_LOCAL_DATE).build();
+
+		String dump = localDateTimeIterator.dump();
+		assertThat(dump).isEqualTo("[2022-09-12, 2022-10-12, 2022-11-12]");
+	}
+
+	@Test
+	void testDumpWithLimit() {
+		LocalDateTimeSequence timeSequence1 = LocalDateTimeSequence.builder()
+				.startingPoint(LocalDateTime.of(LocalDate.of(2022, 9, 12), LocalTime.of(20, 00, 0))).cycleCount(1L)
+				.cycleUnit(ChronoUnit.MONTHS).maximumPointCount(5L).build();
+
+		LocalDateTimeIterator localDateTimeIterator = LocalDateTimeIterator.builder()
+				.startingPoint(initialStartLocalDateTime).maximumPointCount(5L).sequence(timeSequence1)
+				.dateTimeFormatter(DateTimeFormatter.ISO_LOCAL_DATE).build();
+
+		String dump = localDateTimeIterator.dump(2L);
+		assertThat(dump).isEqualTo("[2022-09-12, 2022-10-12]");
+	}
+
+	@Test
+	void testToString() {
+		LocalDateTimeIterator localDateTimeIterator = LocalDateTimeIterator.builder()
+				.startingPoint(initialStartLocalDateTime).maximumPointCount(5L).incrementing(true).build();
+		String summary = localDateTimeIterator.toString();
+		assertThat(summary).isEqualTo("LocalDateTimeIterator[start=2022-09-12T20:00, direction=FORWARD, max=5]");
 	}
 
 	@Test

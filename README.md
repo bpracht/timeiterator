@@ -3,6 +3,10 @@ TimeIterator is a project to help model a stream of dates. This provides the dev
 get a stream of dates based on normal human usage. For example, a payroll every 2 weeks on a Friday could be 
 modeled. Given a starting point, and and an increment size, a stream of dates, limited or unlimited can be iterated.
 
+## Requirements
+- **Java**: 17 or higher (Tested with 17.0.2 and 22.0.1)
+- **Maven**: 3.9.x or higher (Tested with 3.9.9)
+
 The LocalDateTimeIterator is used when the need calls for a starting point and an increment. If multiple streams need
 to be combined, say payroll plus a quarterly bonus, the LocalDateTimeSequence allows multiple streams to be combined.
 

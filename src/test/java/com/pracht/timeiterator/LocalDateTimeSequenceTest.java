@@ -155,15 +155,35 @@ public class LocalDateTimeSequenceTest {
 	}
 
 	@Test
+	void testDump() {
+		timeSequence = LocalDateTimeSequence.builder()
+				.startingPoint(LocalDateTime.of(LocalDate.of(2022, 9, 12), LocalTime.of(20, 00, 0))).cycleCount(4L)
+				.cycleUnit(ChronoUnit.YEARS).maximumPointCount(5L).dateTimeFormatter(DateTimeFormatter.ISO_LOCAL_DATE)
+				.endingPoint(LocalDateTime.of(LocalDate.of(2039, 9, 12), LocalTime.of(20, 00, 0))).build();
+		String printableString = timeSequence.dump();
+		assertThat(printableString).isNotNull();
+		assertThat(printableString).isEqualTo("[2022-09-12, 2026-09-12, 2030-09-12, 2034-09-12, 2038-09-12]");
+	}
+
+	@Test
+	void testDumpWithLimit() {
+		timeSequence = LocalDateTimeSequence.builder()
+				.startingPoint(LocalDateTime.of(LocalDate.of(2022, 9, 12), LocalTime.of(20, 00, 0))).cycleCount(4L)
+				.cycleUnit(ChronoUnit.YEARS).maximumPointCount(5L).dateTimeFormatter(DateTimeFormatter.ISO_LOCAL_DATE)
+				.endingPoint(LocalDateTime.of(LocalDate.of(2039, 9, 12), LocalTime.of(20, 00, 0))).build();
+		String printableString = timeSequence.dump(2L);
+		assertThat(printableString).isNotNull();
+		assertThat(printableString).isEqualTo("[2022-09-12, 2026-09-12]");
+	}
+
+	@Test
 	void testToString() {
 		timeSequence = LocalDateTimeSequence.builder()
 				.startingPoint(LocalDateTime.of(LocalDate.of(2022, 9, 12), LocalTime.of(20, 00, 0))).cycleCount(4L)
 				.cycleUnit(ChronoUnit.YEARS).maximumPointCount(5L).dateTimeFormatter(DateTimeFormatter.ISO_LOCAL_DATE)
 				.endingPoint(LocalDateTime.of(LocalDate.of(2039, 9, 12), LocalTime.of(20, 00, 0))).build();
-		String printableString = timeSequence.toString();
-		assertThat(printableString).isNotNull();
-		assertThat(printableString).isEqualTo("[2022-09-12, 2026-09-12, 2030-09-12, 2034-09-12, 2038-09-12]");
-
+		String summary = timeSequence.toString();
+		assertThat(summary).isEqualTo("LocalDateTimeSequence[start=2022-09-12T20:00, direction=FORWARD, max=5]");
 	}
 
 	@Test

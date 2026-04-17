@@ -208,14 +208,27 @@ public class LocalDateTimeSequence implements Iterator<LocalDateTime> {
 		return result;
 	}
 
+	public String dump() {
+		return dump(null);
+	}
+
+	public String dump(Long max) {
+		Stream<LocalDateTime> s = stream();
+		if (max != null) {
+			s = s.limit(max);
+		}
+		DateTimeFormatter formatter = (this.dateTimeFormatter == null) ? DateTimeFormatter.ISO_LOCAL_DATE_TIME
+				: this.dateTimeFormatter;
+		return s.map(localDateTime -> formatter.format(localDateTime))
+				.collect(Collectors.joining(", ", "[", "]"));
+	}
+
 	@Override
 	public String toString() {
-		StringBuilder resultBuilder = new StringBuilder();
-		DateTimeFormatter dateTimeFormatter = (this.dateTimeFormatter == null) ? DateTimeFormatter.ISO_LOCAL_DATE_TIME
-				: this.dateTimeFormatter;
-		resultBuilder.append(stream().map(localDateTime -> dateTimeFormatter.format(localDateTime))
-				.collect(Collectors.joining(", ", "[", "]")));
-		return resultBuilder.toString();
+		return String.format("LocalDateTimeSequence[start=%s, direction=%s, max=%s]",
+				startingPoint,
+				(incrementing != null && incrementing) ? "FORWARD" : "BACKWARD",
+				maximumPointCount != null ? maximumPointCount : "NONE");
 	}
 
 }
