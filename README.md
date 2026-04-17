@@ -7,21 +7,33 @@ modeled. Given a starting point, and and an increment size, a stream of dates, l
 - **Java**: 17 or higher (Tested with 17.0.2 and 22.0.1)
 - **Maven**: 3.9.x or higher (Tested with 3.9.9)
 
-The LocalDateTimeIterator is used when the need calls for a starting point and an increment. If multiple streams need
-to be combined, say payroll plus a quarterly bonus, the LocalDateTimeSequence allows multiple streams to be combined.
+The **TimePointIterator** is used when the need calls for a starting point and an increment. If multiple streams need
+to be combined, say payroll plus a quarterly bonus, the **TimePointSequence** allows multiple streams to be combined.
+
+These classes use the **TimePoint** composite class, which supports both `LocalDateTime` and `ZonedDateTime`.
 
 # Limitations and future direction
-Initially it only supports the current timezone, though future versions will support global dates. These represent 
-points in time, but in the future, a series of timeframes will be added. Finally, the ability to skip certain dates 
-will be supported, for example, moving a payroll date given a holiday.
+The project now supports both local and zoned timestamps via the `TimePoint` class. In the future, a series of timeframes will be added. Finally, the ability to skip certain dates will be supported, for example, moving a payroll date given a holiday.
 
 # Example
-This model dates from 9/12/2022 at 8pm, every 3 months do:
-timeSequence = LocalDateTimeSequence.builder()
-				.startingPoint(LocalDateTime.of(LocalDate.of(2022, 9, 12), LocalTime.of(20, 00, 0))).cycleCount(3L)
-				.cycleUnit(ChronoUnit.MONTHS).build();
+This models dates from 9/12/2022 at 8pm, every 3 months using `TimePoint`:
 
+```java
+TimePoint start = TimePoint.from(LocalDateTime.of(2022, 9, 12, 20, 0));
+TimePointSequence sequence = TimePointSequence.builder()
+				.startingPoint(start)
+				.cycleCount(3L)
+				.cycleUnit(ChronoUnit.MONTHS)
+				.build();
+```
 
+To use Zoned dates:
 
-
-
+```java
+TimePoint zonedStart = TimePoint.from(ZonedDateTime.now(ZoneId.of("America/New_York")));
+TimePointSequence zonedSequence = TimePointSequence.builder()
+				.startingPoint(zonedStart)
+				.cycleCount(1L)
+				.cycleUnit(ChronoUnit.DAYS)
+				.build();
+```

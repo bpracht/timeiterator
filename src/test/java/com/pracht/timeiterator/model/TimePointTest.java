@@ -89,4 +89,60 @@ public class TimePointTest {
         TimePoint tpZoned = TimePoint.from(zdt);
         assertThat(tpZoned.toString()).isEqualTo(zdt.toString());
     }
+
+    @Test
+    void testBuilder() {
+        TimePoint tp = TimePoint.builder()
+                .year(2024)
+                .month(5)
+                .day(15)
+                .hour(10)
+                .minute(30)
+                .build();
+        
+        assertThat(tp.isZoned()).isFalse();
+        assertThat(tp.toLocalDateTime()).isEqualTo(LocalDateTime.of(2024, 5, 15, 10, 30));
+    }
+
+    @Test
+    void testBuilderZoned() {
+        ZoneId zone = ZoneId.of("America/New_York");
+        TimePoint tp = TimePoint.builder()
+                .year(2024)
+                .month(12)
+                .day(25)
+                .zoneId(zone)
+                .build();
+        
+        assertThat(tp.isZoned()).isTrue();
+        assertThat(tp.toZonedDateTime()).isEqualTo(ZonedDateTime.of(2024, 12, 25, 0, 0, 0, 0, zone));
+    }
+
+    @Test
+    void testBuilderWithBoundaries() {
+        // Last day of Feb 2024 (Leap year)
+        TimePoint tp = TimePoint.builder()
+                .year(2024)
+                .month(2)
+                .day(TimePoint.UnitBoundary.MAX)
+                .hour(TimePoint.UnitBoundary.MAX)
+                .minute(TimePoint.UnitBoundary.MAX)
+                .second(TimePoint.UnitBoundary.MAX)
+                .nano(TimePoint.UnitBoundary.MAX)
+                .build();
+        
+        LocalDateTime expected = LocalDateTime.of(2024, 2, 29, 23, 59, 59, 999_999_999);
+        assertThat(tp.toLocalDateTime()).isEqualTo(expected);
+    }
+
+    @Test
+    void testBuilderMonthBoundary() {
+        TimePoint tp = TimePoint.builder()
+                .year(2023)
+                .month(TimePoint.UnitBoundary.MAX)
+                .day(TimePoint.UnitBoundary.MIN)
+                .build();
+        
+        assertThat(tp.toLocalDateTime()).isEqualTo(LocalDateTime.of(2023, 12, 1, 0, 0));
+    }
 }
